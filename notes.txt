@@ -1,0 +1,29 @@
+I had to fucking modify gmock source code here:
+
+// Unregisters a mock method; removes the owning mock object from the
+// registry when the last mock method associated with it has been
+// unregistered.  This is called only in the destructor of
+// FunctionMockerBase.
+void Mock::UnregisterLocked(internal::UntypedFunctionMockerBase* mocker)
+    GTEST_EXCLUSIVE_LOCK_REQUIRED_(internal::g_gmock_mutex) {
+  internal::g_gmock_mutex.AssertHeld();
+  /*
+  for (MockObjectRegistry::StateMap::iterator it =
+           g_mock_object_registry.states().begin();
+       it != g_mock_object_registry.states().end(); ++it) {
+    FunctionMockers& mockers = it->second.function_mockers;
+    if (mockers.erase(mocker) > 0) {
+      // mocker was in mockers and has been just removed.
+      if (mockers.empty()) {
+        g_mock_object_registry.states().erase(it);
+      }
+      return;
+    }
+  }
+  */
+  
+  // Fuck!!!
+  return;
+}
+
+because it fucking accessed the thing during the thing...
